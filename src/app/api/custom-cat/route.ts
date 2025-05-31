@@ -26,14 +26,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  console.log('[API custom-cat] POST appelée')
   const userId = await getUserIdFromRequest()
   if (!userId) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
 
   try {
     // On récupère d'abord le corps brut de la requête
     const rawBody = await req.text()
-    console.log('[API custom-cat] Corps brut de la requête:', rawBody)
 
     // On extrait le JSON du multipart/form-data
     const jsonMatch = rawBody.match(/\{.*\}/s)
@@ -50,8 +48,6 @@ export async function POST(req: NextRequest) {
       console.error('[API custom-cat] Erreur de parsing JSON:', e)
       return NextResponse.json({ error: 'Format de données invalide' }, { status: 400 })
     }
-
-    console.log('[API custom-cat] Corps de la requête parsé:', body)
 
     if (!body.nom) {
       return NextResponse.json({ error: 'Le nom est requis' }, { status: 400 })
