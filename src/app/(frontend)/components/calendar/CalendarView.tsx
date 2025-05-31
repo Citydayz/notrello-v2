@@ -63,7 +63,6 @@ export default function CalendarView({
         initialView={currentView}
         headerToolbar={false}
         events={cartes.map((carte) => {
-          console.log('Carte dans CalendarView:', carte)
           let start = carte.date
           let end = carte.date
           let allDay = false
