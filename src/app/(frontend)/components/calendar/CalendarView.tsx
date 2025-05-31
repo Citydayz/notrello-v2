@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
+import dynamic from 'next/dynamic'
+import type FullCalendarType from '@fullcalendar/react'
+
+const FullCalendar = dynamic(() => import('@fullcalendar/react'), {
+  ssr: false,
+})
 import { Carte } from '@/payload-types'
 import CalendarHeader from './CalendarHeader'
 import CalendarEventModal from './CalendarEventModal'
@@ -23,12 +25,13 @@ export default function CalendarView({
   onCarteUpdate,
   onCarteDelete,
 }: CalendarViewProps) {
-  const calendarRef = useRef<FullCalendar>(null)
+  const calendarRef = useRef<FullCalendarType | null>(null)
   const [currentView, setCurrentView] = useState<'dayGridMonth' | 'timeGridWeek' | 'timeGridDay'>(
     'dayGridMonth',
   )
   const [selectedEvent, setSelectedEvent] = useState<Carte | null>(null)
   const [isEventModalOpen, setIsEventModalOpen] = useState(false)
+  const [calendarPlugins, setCalendarPlugins] = useState<any[]>([])
 
   useEffect(() => {
     const calendarApi = calendarRef.current?.getApi()
@@ -36,6 +39,24 @@ export default function CalendarView({
       calendarApi.changeView(currentView)
     }
   }, [currentView])
+
+  useEffect(() => {
+    let mounted = true
+    const loadPlugins = async () => {
+      const [{ default: dayGrid }, { default: timeGrid }, { default: interaction }] = await Promise.all([
+        import('@fullcalendar/daygrid'),
+        import('@fullcalendar/timegrid'),
+        import('@fullcalendar/interaction'),
+      ])
+      if (mounted) {
+        setCalendarPlugins([dayGrid, timeGrid, interaction])
+      }
+    }
+    loadPlugins()
+    return () => {
+      mounted = false
+    }
+  }, [])
 
   const handleEventClick = (info: any) => {
     const carte = cartes.find((c) => c.id === info.event.id)
@@ -49,6 +70,8 @@ export default function CalendarView({
     onCarteCreate(info.date)
   }
 
+  if (calendarPlugins.length === 0) return null
+
   return (
     <div className="calendar-container bg-white rounded-xl shadow p-6">
       <CalendarHeader
@@ -59,7 +82,7 @@ export default function CalendarView({
 
       <FullCalendar
         ref={calendarRef}
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        plugins={calendarPlugins}
         initialView={currentView}
         headerToolbar={false}
         events={cartes.map((carte) => {
