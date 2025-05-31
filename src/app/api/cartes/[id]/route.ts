@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
+import { carteUpdateSchema } from '@/lib/schemas'
 
 async function getUserIdFromRequest() {
   const cookieStore = await cookies()
@@ -30,7 +31,8 @@ export async function PATCH(req: NextRequest, context: { params: { id: string } 
     const formData = await req.formData()
     body = Object.fromEntries(formData.entries())
   }
-  const { titre, description, type, heure, heureFin, date } = body
+  const { titre, description, type, heure, heureFin, date } =
+    carteUpdateSchema.parse(body)
   const updated = await payload.update({
     collection: 'cartes',
     id,

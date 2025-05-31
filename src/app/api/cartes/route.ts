@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
+import { carteCreateSchema } from '@/lib/schemas'
 
 async function getUserIdFromRequest() {
   const cookieStore = await cookies()
@@ -30,10 +31,9 @@ export async function POST(req: NextRequest) {
   const userId = await getUserIdFromRequest()
   if (!userId) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
 
-  const { titre, type, description, heure, heureFin } = await req.json()
-  if (!titre || !heure) {
-    return NextResponse.json({ error: 'Champs requis manquants' }, { status: 400 })
-  }
+  const { titre, type, description, heure, heureFin } = carteCreateSchema.parse(
+    await req.json(),
+  )
 
   const payload = await getPayload({ config })
   const carte = await payload.create({

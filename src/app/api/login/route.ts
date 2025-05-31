@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { serialize } from 'cookie'
+import { loginSchema } from '@/lib/schemas'
 
 export async function POST(req: NextRequest) {
-  const { identifier, password } = await req.json()
+  const { identifier, password } = loginSchema.parse(await req.json())
   const payload = await getPayload({ config })
 
   let email = identifier
