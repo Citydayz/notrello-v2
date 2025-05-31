@@ -29,11 +29,15 @@ cd notrello-v2
 pnpm install
 ```
 
-3. Configurez les variables d'environnement :
+3. Configurez les variables d'environnement en copiant le fichier d'exemple puis
+   en renseignant les valeurs adaptées :
 
 ```bash
 cp .env.example .env
 ```
+
+Les variables à définir incluent notamment `PAYLOAD_SECRET`, `DATABASE_URI` et
+`PAYLOAD_PUBLIC_SERVER_URL`.
 
 4. Démarrez l'application en mode développement :
 
