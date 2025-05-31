@@ -1,0 +1,77 @@
+/* Styles pour le calendrier */
+.calendar-container {
+  --fc-border-color: #e5e7eb;
+  --fc-button-text-color: #374151;
+  --fc-button-bg-color: #f3f4f6;
+  --fc-button-border-color: #e5e7eb;
+  --fc-button-hover-bg-color: #e5e7eb;
+  --fc-button-hover-border-color: #d1d5db;
+  --fc-button-active-bg-color: #3b82f6;
+  --fc-button-active-border-color: #2563eb;
+  --fc-button-active-text-color: #ffffff;
+  --fc-event-bg-color: #3b82f6;
+  --fc-event-border-color: #2563eb;
+  --fc-event-text-color: #ffffff;
+  --fc-today-bg-color: #eff6ff;
+}
+
+/* Styles pour les événements */
+.fc-event {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.fc-event:hover {
+  transform: scale(1.02);
+}
+
+/* Styles pour les en-têtes */
+.fc-col-header-cell {
+  padding: 8px 0;
+  font-weight: 600;
+}
+
+/* Styles pour les cellules du calendrier */
+.fc-daygrid-day {
+  min-height: 100px;
+}
+
+/* Styles pour le bouton "plus" */
+.fc-more-link {
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+/* Styles pour la vue semaine */
+.fc-timegrid-slot {
+  height: 40px;
+}
+
+/* Styles pour la vue jour */
+.fc-timegrid-axis {
+  padding: 8px;
+}
+
+/* Styles pour les événements sur plusieurs jours */
+.fc-multiday-event {
+  border-radius: 4px;
+}
+
+/* Styles pour le header du calendrier */
+.fc-toolbar {
+  margin-bottom: 1.5rem !important;
+}
+
+/* Styles pour les boutons de navigation */
+.fc-button {
+  text-transform: capitalize !important;
+  font-weight: 500 !important;
+  padding: 0.5rem 1rem !important;
+}
+
+/* Styles pour le titre du calendrier */
+.fc-toolbar-title {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  color: #1f2937 !important;
+}
