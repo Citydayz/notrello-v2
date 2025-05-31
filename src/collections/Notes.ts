@@ -6,10 +6,10 @@ const Notes: CollectionConfig = {
     useAsTitle: 'titre',
   },
   access: {
-    read: ({ req }) => !!req.user,
+    read: ({ req, data }) => req.user?.id === data.user,
     create: ({ req }) => !!req.user,
-    update: ({ req }) => !!req.user,
-    delete: ({ req }) => !!req.user,
+    update: ({ req, data }) => req.user?.id === data.user,
+    delete: ({ req, data }) => req.user?.id === data.user,
   },
   fields: [
     {
