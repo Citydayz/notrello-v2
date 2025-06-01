@@ -55,6 +55,14 @@ const Cartes: CollectionConfig = {
       type: 'text',
       required: false,
     },
+    {
+      name: 'icalId',
+      type: 'text',
+      required: false,
+      admin: {
+        description: "ID unique de l'événement importé depuis un calendrier ICS/ICAL",
+      },
+    },
   ],
 }
 

@@ -5,6 +5,13 @@ import { RefObject, useState, useEffect } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import CalendarImport from './CalendarImport'
+
+interface Category {
+  id: string
+  nom: string
+  couleur: string
+}
 
 interface CalendarHeaderProps {
   currentView: 'dayGridMonth' | 'timeGridWeek' | 'timeGridDay'
@@ -18,6 +25,7 @@ export default function CalendarHeader({
   calendarRef,
 }: CalendarHeaderProps) {
   const [currentDate, setCurrentDate] = useState<Date>(new Date())
+  const [categories, setCategories] = useState<Category[]>([])
 
   useEffect(() => {
     const calendarApi = calendarRef.current?.getApi()
@@ -32,6 +40,20 @@ export default function CalendarHeader({
       }
     }
   }, [calendarRef])
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const res = await fetch('/api/custom-cat', { credentials: 'include' })
+        const data = await res.json()
+        setCategories(data.categories)
+      } catch (error) {
+        console.error('Erreur lors du chargement des catégories:', error)
+      }
+    }
+
+    loadCategories()
+  }, [])
 
   const handlePrev = () => {
     const calendarApi = calendarRef.current?.getApi()
@@ -73,62 +95,62 @@ export default function CalendarHeader({
 
   return (
     <div className="flex items-center justify-between mb-6">
-      <div className="flex items-center gap-2">
-        <button
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          onClick={handlePrev}
-          title="Mois précédent"
-        >
-          <ChevronLeftIcon className="w-5 h-5" />
-        </button>
-        <button
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          onClick={handleNext}
-          title="Mois suivant"
-        >
-          <ChevronRightIcon className="w-5 h-5" />
-        </button>
-        <button
-          className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-          onClick={handleToday}
-        >
-          Aujourd&apos;hui
-        </button>
-        <h2 className="text-xl font-semibold text-gray-800 capitalize">{formatDate()}</h2>
+      <div className="flex items-center gap-4">
+        <h1 className="text-2xl font-bold text-gray-900">{formatDate()}</h1>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handlePrev}
+            className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+          >
+            <ChevronLeftIcon className="h-5 w-5" />
+          </button>
+          <button
+            onClick={handleToday}
+            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500"
+          >
+            Aujourd'hui
+          </button>
+          <button
+            onClick={handleNext}
+            className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+          >
+            <ChevronRightIcon className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="flex items-center gap-2 ml-4">
+          <button
+            onClick={() => onViewChange('dayGridMonth')}
+            className={`rounded-lg px-4 py-2 text-sm font-semibold ${
+              currentView === 'dayGridMonth'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Mois
+          </button>
+          <button
+            onClick={() => onViewChange('timeGridWeek')}
+            className={`rounded-lg px-4 py-2 text-sm font-semibold ${
+              currentView === 'timeGridWeek'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Semaine
+          </button>
+          <button
+            onClick={() => onViewChange('timeGridDay')}
+            className={`rounded-lg px-4 py-2 text-sm font-semibold ${
+              currentView === 'timeGridDay'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Jour
+          </button>
+        </div>
       </div>
-
-      <div className="flex items-center gap-2">
-        <button
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            currentView === 'dayGridMonth'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-          onClick={() => onViewChange('dayGridMonth')}
-        >
-          Mois
-        </button>
-        <button
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            currentView === 'timeGridWeek'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-          onClick={() => onViewChange('timeGridWeek')}
-        >
-          Semaine
-        </button>
-        <button
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            currentView === 'timeGridDay'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
-          onClick={() => onViewChange('timeGridDay')}
-        >
-          Jour
-        </button>
-      </div>
+      <CalendarImport categories={categories} setCategories={setCategories} />
     </div>
   )
 }

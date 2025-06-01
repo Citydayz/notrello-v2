@@ -169,6 +169,10 @@ export interface Carte {
   date: string;
   user: string | User;
   heureFin?: string | null;
+  /**
+   * ID unique de l'événement importé depuis un calendrier ICS/ICAL
+   */
+  icalId?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -312,6 +316,7 @@ export interface CartesSelect<T extends boolean = true> {
   date?: T;
   user?: T;
   heureFin?: T;
+  icalId?: T;
   updatedAt?: T;
   createdAt?: T;
 }

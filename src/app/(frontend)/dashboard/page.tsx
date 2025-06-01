@@ -80,6 +80,27 @@ function SortableCarte({ carte, onClick }: { carte: Carte; onClick?: () => void 
     none: 'bg-gray-100 text-gray-400 border-gray-200',
   }
 
+  const [selectedCartes, setSelectedCartes] = useState<Set<string>>(new Set())
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (e.ctrlKey || e.metaKey) {
+      // Sélection multiple avec Ctrl/Cmd
+      setSelectedCartes((prev) => {
+        const newSet = new Set(prev)
+        if (newSet.has(carte.id)) {
+          newSet.delete(carte.id)
+        } else {
+          newSet.add(carte.id)
+        }
+        return newSet
+      })
+    } else {
+      // Sélection simple
+      setSelectedCartes(new Set([carte.id]))
+      onClick?.()
+    }
+  }
+
   return (
     <div
       ref={setNodeRef}
@@ -88,8 +109,8 @@ function SortableCarte({ carte, onClick }: { carte: Carte; onClick?: () => void 
         carte.type?.couleur
           ? typeColors[carte.type.couleur as keyof typeof typeColors] || typeColors.blue
           : typeColors.none
-      }`}
-      onClick={onClick}
+      } ${selectedCartes.has(carte.id) ? 'ring-2 ring-blue-500' : ''}`}
+      onClick={handleClick}
       tabIndex={0}
       role="button"
     >
@@ -150,6 +171,7 @@ export default function DashboardHome() {
   const [_user, _setUser] = useState<{ pseudo?: string } | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCarte, setSelectedCarte] = useState<Carte | null>(null)
+  const [selectedCartes, setSelectedCartes] = useState<Set<string>>(new Set())
   const [dateActuelle, _setDateActuelle] = useState(() => {
     const now = new Date()
     return now.toISOString().split('T')[0]
@@ -402,6 +424,45 @@ export default function DashboardHome() {
           categories={categories}
           setCategories={setCategories}
         />
+      )}
+
+      {selectedCartes.size > 0 && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white rounded-lg shadow-lg border border-gray-200 p-2 flex items-center gap-2 z-50">
+          <span className="text-sm text-gray-600">{selectedCartes.size} carte(s) sélectionnée(s)</span>
+          <button
+            className="bg-red-600 text-white px-3 py-1.5 rounded text-sm font-medium hover:bg-red-700"
+            onClick={async () => {
+              if (window.confirm(`Voulez-vous vraiment supprimer ${selectedCartes.size} carte(s) ?`)) {
+                try {
+                  const res = await fetch('/api/cartes/bulk-delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ ids: Array.from(selectedCartes) }),
+                  })
+                  if (res.ok) {
+                    setCartes((old) => old.filter((c) => !selectedCartes.has(c.id)))
+                    setSelectedCartes(new Set())
+                  } else {
+                    const data = await res.json()
+                    alert(data.error || 'Erreur lors de la suppression')
+                  }
+                } catch (error) {
+                  console.error('Erreur lors de la suppression:', error)
+                  alert('Erreur lors de la suppression')
+                }
+              }
+            }}
+          >
+            Supprimer
+          </button>
+          <button
+            className="bg-gray-100 text-gray-700 px-3 py-1.5 rounded text-sm font-medium hover:bg-gray-200"
+            onClick={() => setSelectedCartes(new Set())}
+          >
+            Annuler
+          </button>
+        </div>
       )}
     </div>
   )
