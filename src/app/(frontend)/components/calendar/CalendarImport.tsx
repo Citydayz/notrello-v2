@@ -45,7 +45,7 @@ export default function CalendarImport({ categories, setCategories }: CalendarIm
         const events = parseICS(text)
 
         if (events.length === 0) {
-          setError("Aucun événement valide n'a été trouvé dans le fichier")
+          setError('Aucun événement valide n&apos;a été trouvé dans le fichier')
           return
         }
 
@@ -68,19 +68,19 @@ export default function CalendarImport({ categories, setCategories }: CalendarIm
         const data = await response.json()
 
         if (!response.ok) {
-          throw new Error(data.error || "Erreur lors de l'importation")
+          throw new Error(data.error || 'Erreur lors de l&apos;importation')
         }
 
         if (data.errors && data.errors.length > 0) {
           setError(data.errors.join('\n'))
         } else if (data.imported === 0) {
-          setError("Aucun événement n'a été importé")
+          setError('Aucun événement n&apos;a été importé')
         } else {
           window.location.reload()
         }
       } catch (err) {
         console.error('Erreur complète:', err)
-        setError(err instanceof Error ? err.message : "Erreur lors de l'importation")
+        setError(err instanceof Error ? err.message : 'Erreur lors de l&apos;importation')
       } finally {
         setIsLoading(false)
         setIsModalOpen(false)
@@ -123,7 +123,7 @@ export default function CalendarImport({ categories, setCategories }: CalendarIm
           <div className="rounded-lg bg-white p-6 shadow-xl max-w-lg w-full">
             <div className="text-center">
               <p className="text-lg font-semibold text-red-600 mb-4">
-                Erreur lors de l'importation
+                Erreur lors de l&apos;importation
               </p>
               <div className="text-sm text-gray-600 whitespace-pre-line mb-4">{error}</div>
               <button
@@ -158,7 +158,7 @@ function parseICS(icsContent: string) {
       if (currentEvent) {
         // Vérifier si l'événement a les champs requis
         if (currentEvent.titre && currentEvent.date) {
-          // Si pas d'heure spécifiée, c'est un événement sur toute la journée
+          // Si pas d&apos;heure spécifiée, c&apos;est un événement sur toute la journée
           if (!currentEvent.heure) {
             currentEvent.heure = '00:00'
           }

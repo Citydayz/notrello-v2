@@ -172,7 +172,7 @@ export default function CalendarImportModal({
                                 const data = await res.json()
                                 setCatError(data.error || 'Erreur lors de la création')
                               }
-                            } catch (error) {
+                            } catch (_error) {
                               setCatError('Erreur lors de la création de la catégorie')
                             } finally {
                               setCatLoading(false)
