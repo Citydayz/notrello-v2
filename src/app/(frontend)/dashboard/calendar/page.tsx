@@ -5,23 +5,37 @@ import { Carte } from '@/payload-types'
 import CalendarView from '../../components/calendar/CalendarView'
 import CreateCardModal from '../../components/CreateCardModal'
 
+interface Category {
+  id: string
+  nom: string
+  couleur: string
+}
+
 export default function CalendarPage() {
   const [cartes, setCartes] = useState<Carte[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
   useEffect(() => {
-    const loadCartes = async () => {
+    const loadData = async () => {
       try {
-        const res = await fetch('/api/cartes', { credentials: 'include' })
-        const data = await res.json()
-        setCartes(data.cartes)
+        const [cartesRes, categoriesRes] = await Promise.all([
+          fetch('/api/cartes', { credentials: 'include' }),
+          fetch('/api/custom-cat', { credentials: 'include' }),
+        ])
+        const [cartesData, categoriesData] = await Promise.all([
+          cartesRes.json(),
+          categoriesRes.json(),
+        ])
+        setCartes(cartesData.cartes)
+        setCategories(categoriesData.categories)
       } catch (error) {
-        console.error('Erreur lors du chargement des cartes:', error)
+        console.error('Erreur lors du chargement des données:', error)
       }
     }
 
-    loadCartes()
+    loadData()
   }, [])
 
   const handleCarteCreate = (date: Date) => {
@@ -102,6 +116,8 @@ export default function CalendarPage() {
               console.error('Erreur lors de la création:', error)
             }
           }}
+          categories={categories}
+          setCategories={setCategories}
         />
       )}
     </div>

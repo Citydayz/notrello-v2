@@ -4,7 +4,7 @@ import config from '@/payload.config'
 import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   const cookieStore = await cookies()
   const token = cookieStore.get('payload-token')?.value
 
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json({ user: docs[0] })
-  } catch (err) {
-    return NextResponse.json({ user: null }, { status: 401 })
+  } catch (_err) {
+    return NextResponse.json({ error: 'Erreur de connexion au serveur' }, { status: 500 })
   }
 }

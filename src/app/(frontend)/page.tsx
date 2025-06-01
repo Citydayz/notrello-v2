@@ -62,7 +62,7 @@ export default function Home() {
             {
               icon: '📅',
               title: 'Agenda visuel',
-              desc: 'Visualise ta journée d&apos;un coup d&apos;œil, déplace tes tâches comme tu veux.&quot;',
+              desc: 'Visualise ta journée d&apos;un coup d&apos;œil, déplace tes tâches comme tu veux.',
             },
             {
               icon: '🗂️',
@@ -79,7 +79,7 @@ export default function Home() {
               title: 'Connexion sécurisée',
               desc: 'Tout est protégé, tu es le seul à accéder à tes données.',
             },
-          ].map((f, i) => (
+          ].map((f, _i) => (
             <div
               key={f.title}
               className="flex flex-col items-center text-center p-8 rounded-2xl bg-blue-50 border border-blue-100 shadow-md hover:shadow-xl transition-all duration-200 group"
@@ -118,7 +118,7 @@ export default function Home() {
               <span className="text-3xl mb-2">3️⃣</span>
               <h4 className="font-semibold text-lg mb-1">Respire</h4>
               <p className="text-gray-600 text-sm">
-                Profite d'un outil qui s'adapte à ton rythme, sans pression.
+                Profite d&apos;un outil qui s&apos;adapte à ton rythme, sans pression.
               </p>
             </div>
           </div>
@@ -127,10 +127,10 @@ export default function Home() {
       {/* Pourquoi */}
       <section id="pourquoi" className="py-20 bg-white text-center px-4">
         <h2 className="text-2xl md:text-3xl font-bold mb-6 text-blue-800">
-          Notrello n'est pas un outil de productivité de plus. C'est un outil de clarté.
+          Notrello n&apos;est pas un outil de productivité de plus. C&apos;est un outil de clarté.
         </h2>
         <p className="max-w-2xl mx-auto text-lg text-gray-700">
-          Conçu pour les cerveaux qui s'éparpillent, Notrello t'aide à poser les choses
+          Conçu pour les cerveaux qui s&apos;éparpillent, Notrello t&apos;aide à poser les choses
           visuellement, simplement.
         </p>
       </section>
@@ -146,7 +146,7 @@ export default function Home() {
             loading="lazy"
           />
           <blockquote className="italic text-xl text-gray-600 mb-2">
-            « Créé par quelqu'un avec un TDAH, pour tous ceux qui galèrent à structurer leurs
+            « Créé par quelqu&apos;un avec un TDAH, pour tous ceux qui galèrent à structurer leurs
             journées. »
           </blockquote>
           <span className="text-gray-500 text-sm">Hugo, créateur de Notrello</span>

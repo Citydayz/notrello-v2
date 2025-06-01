@@ -9,8 +9,16 @@ import { Carte } from '@/payload-types'
 import CalendarHeader from './CalendarHeader'
 import CalendarEventModal from './CalendarEventModal'
 import './calendar.css'
-import type { EventClickArg, DateClickArg } from '@fullcalendar/interaction'
-import type { FullCalendar } from '@fullcalendar/core'
+
+interface EventClickInfo {
+  event: {
+    id: string
+  }
+}
+
+interface DateClickInfo {
+  date: Date
+}
 
 interface CalendarViewProps {
   cartes: Carte[]
@@ -25,7 +33,7 @@ export default function CalendarView({
   onCarteUpdate,
   onCarteDelete,
 }: CalendarViewProps) {
-  const calendarRef = useRef<FullCalendar | null>(null)
+  const calendarRef = useRef<FullCalendar>(null!)
   const [currentView, setCurrentView] = useState<'dayGridMonth' | 'timeGridWeek' | 'timeGridDay'>(
     'dayGridMonth',
   )
@@ -39,7 +47,7 @@ export default function CalendarView({
     }
   }, [currentView])
 
-  const handleEventClick = (info: EventClickArg) => {
+  const handleEventClick = (info: EventClickInfo) => {
     const carte = cartes.find((c) => c.id === info.event.id)
     if (carte) {
       setSelectedEvent(carte)
@@ -47,7 +55,7 @@ export default function CalendarView({
     }
   }
 
-  const handleDateClick = (info: DateClickArg) => {
+  const handleDateClick = (info: DateClickInfo) => {
     onCarteCreate(info.date)
   }
 

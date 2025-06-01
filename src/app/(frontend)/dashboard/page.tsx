@@ -10,12 +10,7 @@ import {
   DragEndEvent,
   useDroppable,
 } from '@dnd-kit/core'
-import {
-  arrayMove,
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable'
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import CreateCardModal from '../components/CreateCardModal'
 
@@ -152,10 +147,10 @@ export default function DashboardHome() {
   const [cartes, setCartes] = useState<Carte[]>([])
   const [filtre, setFiltre] = useState<string | null>(null)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-  const [user, setUser] = useState<{ pseudo?: string } | null>(null)
+  const [_user, _setUser] = useState<{ pseudo?: string } | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCarte, setSelectedCarte] = useState<Carte | null>(null)
-  const [dateActuelle, setDateActuelle] = useState(() => {
+  const [dateActuelle, _setDateActuelle] = useState(() => {
     const now = new Date()
     return now.toISOString().split('T')[0]
   })
@@ -168,7 +163,7 @@ export default function DashboardHome() {
         // Charger l'utilisateur
         const userRes = await fetch('/api/me', { credentials: 'include' })
         const userData = await userRes.json()
-        setUser(userData.user)
+        _setUser(userData.user)
 
         // Charger les catégories
         const categoriesRes = await fetch('/api/custom-cat', { credentials: 'include' })
@@ -189,8 +184,8 @@ export default function DashboardHome() {
         })
         const cartesData = await cartesRes.json()
         setCartes(cartesData.cartes)
-      } catch (error) {
-        console.error('Erreur lors du chargement des données:', error)
+      } catch (_e) {
+        console.error('Erreur lors du chargement des données:', _e)
       }
     }
 
@@ -245,76 +240,58 @@ export default function DashboardHome() {
         if (!moved) return old
         if (moved.heure === overId) return old
         // Calcul du décalage si heureFin existe
-        const newHeureFin = moved.heureFin
-        if (
-          moved.heureFin &&
-          /^\d{2}:\d{2}/.test(moved.heure) &&
-          /^\d{2}:\d{2}/.test(moved.heureFin)
-        ) {
-          const [h1, m1] = moved.heure.split(':').map(Number)
-          const [h2, m2] = moved.heureFin.split(':').map(Number)
-          const duration = h2 * 60 + m2 - (h1 * 60 + m1)
-          const [newH, newM] = overId.split(':').map(Number)
-          const finMinutes = newH * 60 + newM + duration
-          const finH = Math.floor(finMinutes / 60)
-          const finMin = finMinutes % 60
-          newHeureFin = `${finH.toString().padStart(2, '0')}:${finMin.toString().padStart(2, '0')}`
+        let newHeureFin = moved.heureFin
+        if (moved.heureFin && moved.heureFin !== moved.heure) {
+          const [oldHeure, oldMinute] = moved.heure.split(':').map(Number)
+          const [oldFinHeure, oldFinMinute] = moved.heureFin.split(':').map(Number)
+          const [newHeure, newMinute] = overId.split(':').map(Number)
+          const diffHeures = newHeure - oldHeure
+          const diffMinutes = newMinute - oldMinute
+          const newFinHeure = oldFinHeure + diffHeures
+          const newFinMinute = oldFinMinute + diffMinutes
+          newHeureFin = `${newFinHeure.toString().padStart(2, '0')}:${newFinMinute.toString().padStart(2, '0')}`
         }
-        // PATCH backend
-        fetch(`/api/cartes/${carteId}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ heure: overId, heureFin: newHeureFin }),
+        return old.map((c) =>
+          c.id === carteId
+            ? {
+                ...c,
+                heure: overId,
+                heureFin: newHeureFin,
+              }
+            : c,
+        )
+      })
+    } else if (typeof overId === 'string' && overId.startsWith('carte-')) {
+      // Si on drop sur une autre carte
+      const [fromHeure, fromIdx] = active.id.toString().split('-')
+      const [toHeure, toIdx] = overId.split('-')
+      if (fromHeure === toHeure) {
+        // Même heure, on réorganise
+        setCartes((old) => {
+          const cartesHeure = old.filter((c) => c.heure === fromHeure)
+          const moved = cartesHeure[Number(fromIdx)]
+          const newCartesHeure = [...cartesHeure]
+          newCartesHeure.splice(Number(fromIdx), 1)
+          newCartesHeure.splice(Number(toIdx), 0, moved)
+          return old.map((c) =>
+            c.heure === fromHeure ? newCartesHeure[old.findIndex((c2) => c2.id === c.id)] : c,
+          )
         })
-        moved.heure = overId
-        moved.heureFin = newHeureFin
-        const newCartes = old.filter((c) => c.id !== carteId)
-        const before = newCartes.filter((c) => c.heure !== overId)
-        const after = newCartes.filter((c) => c.heure === overId)
-        after.push(moved)
-        return [...before, ...after]
-      })
-      return
-    }
-    // Sinon, comportement classique (drop sur une autre carte)
-    if (active.id === over.id) return
-    const fromHeure = null,
-      toHeure = null,
-      fromIdx = -1,
-      toIdx = -1
-    for (const h of HEURES) {
-      const idx = cartesParHeure[h].findIndex((c) => c.id === active.id)
-      if (idx !== -1) {
-        fromHeure = h
-        fromIdx = idx
+      } else {
+        // Heure différente, on déplace
+        setCartes((old) => {
+          const moved = old.find((c) => c.id === active.id)
+          if (!moved) return old
+          return old.map((c) =>
+            c.id === active.id
+              ? {
+                  ...c,
+                  heure: toHeure,
+                }
+              : c,
+          )
+        })
       }
-      const idx2 = cartesParHeure[h].findIndex((c) => c.id === over.id)
-      if (idx2 !== -1) {
-        toHeure = h
-        toIdx = idx2
-      }
-    }
-    if (fromHeure && toHeure) {
-      setCartes((old) => {
-        const moved = old.find((c) => c.id === active.id)
-        if (!moved) return old
-        // PATCH backend
-        if (moved.heure !== toHeure) {
-          fetch(`/api/cartes/${active.id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ heure: toHeure }),
-          })
-        }
-        const newCartes = old.filter((c) => c.id !== active.id)
-        moved.heure = toHeure
-        const before = newCartes.filter((c) => c.heure !== toHeure)
-        const after = newCartes.filter((c) => c.heure === toHeure)
-        after.splice(toIdx, 0, moved)
-        return [...before, ...after]
-      })
     }
   }
 
@@ -448,7 +425,7 @@ function ModalCarteDetail({
   setCategories: React.Dispatch<React.SetStateAction<Category[]>>
 }) {
   const [isEdit, setIsEdit] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [_isDeleting, _setIsDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
@@ -494,7 +471,7 @@ function ModalCarteDetail({
         const data = await res.json()
         setError(data.error || 'Erreur lors de la suppression')
       }
-    } catch (e) {
+    } catch (_e) {
       setError('Erreur lors de la suppression')
     } finally {
       setLoading(false)

@@ -1,5 +1,12 @@
 import { CollectionConfig } from 'payload'
 
+interface _CustomCategory {
+  id: string
+  nom: string
+  couleur: string
+  user: string
+}
+
 const Cartes: CollectionConfig = {
   slug: 'cartes',
   admin: {
@@ -24,7 +31,7 @@ const Cartes: CollectionConfig = {
     {
       name: 'type',
       type: 'relationship',
-      relationTo: 'custom-cat' as any,
+      relationTo: 'custom-cat',
       required: false,
     },
     {

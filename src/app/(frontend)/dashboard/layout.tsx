@@ -1,7 +1,5 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { getPayload } from 'payload'
-import config from '@/payload.config'
 import jwt from 'jsonwebtoken'
 import ClientLayout from './ClientLayout'
 

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 
 interface InputFieldProps {
   type: 'text' | 'email' | 'password'
@@ -46,7 +45,7 @@ export default function InputField({
   rightIcon,
 }: InputFieldProps) {
   const [error, setError] = useState<string>('')
-  const [showPassword, setShowPassword] = useState(false)
+  const [_showPassword, _setShowPassword] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
 
   useEffect(() => {
@@ -91,7 +90,7 @@ export default function InputField({
     validateInput(value)
   }
 
-  const inputType = type === 'password' && showPassword ? 'text' : type
+  const inputType = type === 'password' && _showPassword ? 'text' : type
 
   return (
     <div className={`relative ${className}`}>

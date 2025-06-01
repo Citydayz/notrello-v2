@@ -39,6 +39,6 @@ export default buildConfig({
     // storage-adapter-placeholder
   ],
   graphQL: {
-    schemaOutputFile: path.resolve(__dirname, 'generated-schema.graphql'),
+    schemaOutputFile: path.resolve(dirname, 'generated-schema.graphql'),
   },
 })

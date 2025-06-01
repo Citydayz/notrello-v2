@@ -13,14 +13,14 @@ async function getUserIdFromRequest() {
   return decoded.id
 }
 
-export async function PATCH(req: NextRequest, context: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const userId = await getUserIdFromRequest()
   if (!userId) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
-  const { id } = await context.params
+  const { id } = await params
   const payload = await getPayload({ config })
   const carte = await payload.findByID({ collection: 'cartes', id })
   if (!carte) return NextResponse.json({ error: 'Carte introuvable' }, { status: 404 })
-  if (carte.user !== userId && carte.user?.id !== userId) {
+  if (carte.user !== userId && typeof carte.user === 'object' && carte.user?.id !== userId) {
     return NextResponse.json({ error: 'Non autorisé' }, { status: 403 })
   }
 
@@ -53,14 +53,17 @@ export async function PATCH(req: NextRequest, context: { params: { id: string } 
   return NextResponse.json({ carte: updated })
 }
 
-export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const userId = await getUserIdFromRequest()
   if (!userId) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
-  const { id } = await context.params
+  const { id } = await params
   const payload = await getPayload({ config })
   const carte = await payload.findByID({ collection: 'cartes', id })
   if (!carte) return NextResponse.json({ error: 'Carte introuvable' }, { status: 404 })
-  if (carte.user !== userId && carte.user?.id !== userId) {
+  if (carte.user !== userId && typeof carte.user === 'object' && carte.user?.id !== userId) {
     return NextResponse.json({ error: 'Non autorisé' }, { status: 403 })
   }
   await payload.delete({ collection: 'cartes', id })

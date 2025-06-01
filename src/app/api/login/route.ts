@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     )
 
     return res
-  } catch (err) {
-    return NextResponse.json({ error: 'Identifiants invalides' }, { status: 401 })
+  } catch (_err) {
+    return NextResponse.json({ error: 'Erreur de connexion au serveur' }, { status: 500 })
   }
 }

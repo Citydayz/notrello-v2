@@ -20,20 +20,20 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
   const [identifier, setIdentifier] = useState('')
   const [pseudo, setPseudo] = useState('')
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
+  const [_password, _setPassword] = useState('')
+  const [_confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [isSelecting, setIsSelecting] = useState(false)
   const [passwordStrength, setPasswordStrength] = useState(0)
   const [pseudoError, setPseudoError] = useState<string | undefined>()
   const [emailError, setEmailError] = useState<string | undefined>()
-  const [loginPasswordReadOnly, setLoginPasswordReadOnly] = useState(true)
-  const [registerPasswordReadOnly, setRegisterPasswordReadOnly] = useState(true)
-  const [registerConfirmPasswordReadOnly, setRegisterConfirmPasswordReadOnly] = useState(true)
-  const [loginPasswordType, setLoginPasswordType] = useState<'text' | 'password'>('text')
-  const [registerPasswordType, setRegisterPasswordType] = useState<'text' | 'password'>('text')
-  const [registerConfirmPasswordType, setRegisterConfirmPasswordType] = useState<
+  const [_loginPasswordReadOnly, _setLoginPasswordReadOnly] = useState(true)
+  const [_registerPasswordReadOnly, _setRegisterPasswordReadOnly] = useState(true)
+  const [_registerConfirmPasswordReadOnly, _setRegisterConfirmPasswordReadOnly] = useState(true)
+  const [_loginPasswordType, _setLoginPasswordType] = useState<'text' | 'password'>('text')
+  const [_registerPasswordType, _setRegisterPasswordType] = useState<'text' | 'password'>('text')
+  const [_registerConfirmPasswordType, _setRegisterConfirmPasswordType] = useState<
     'text' | 'password'
   >('text')
   const [showLoginPassword, setShowLoginPassword] = useState(false)
@@ -84,13 +84,13 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
 
   // Fermer en cliquant sur l'overlay
   const handleOverlayClick = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
+    (_e: React.MouseEvent<HTMLDivElement>) => {
       // Ne pas fermer si on vient de sélectionner du texte
       if (isSelecting) {
         setIsSelecting(false)
         return
       }
-      if (e.target === e.currentTarget) {
+      if (_e.target === _e.currentTarget) {
         onClose()
       }
     },
@@ -141,7 +141,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
         const data = await res.json()
         setError(data.error || 'Erreur lors de la création du compte')
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Erreur de connexion au serveur')
     }
     setLoading(false)
@@ -168,7 +168,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
   }
 
   // Nouvelle logique pour le type de champ mot de passe
-  function getPasswordType(show: boolean, forcePassword: boolean) {
+  const _getPasswordType = (show: boolean, forcePassword: boolean) => {
     if (show) return 'text'
     return forcePassword ? 'password' : 'text'
   }
@@ -177,13 +177,13 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
     <div
       className="fixed inset-0 flex items-center justify-center z-[9999] bg-black bg-opacity-50"
       onClick={handleOverlayClick}
-      onMouseDown={(e) => {
+      onMouseDown={(_e) => {
         // Détecter si on commence une sélection dans un input
-        if ((e.target as HTMLElement).closest('input')) {
+        if ((_e.target as HTMLElement).closest('input')) {
           setIsSelecting(true)
         }
       }}
-      onMouseUp={(e) => {
+      onMouseUp={(_e) => {
         // Réinitialiser l'état de sélection après un court délai
         setTimeout(() => {
           setIsSelecting(false)
@@ -192,7 +192,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
     >
       <div
         className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md relative"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(_e) => _e.stopPropagation()}
       >
         <button
           onClick={onClose}

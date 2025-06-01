@@ -3,13 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
-import {
-  CalendarIcon,
-  ClockIcon,
-  TagIcon,
-  DocumentTextIcon,
-  PlusIcon,
-} from '@heroicons/react/24/outline'
+import { ClockIcon, TagIcon, DocumentTextIcon, PlusIcon } from '@heroicons/react/24/outline'
 import DatePicker from './ui/DatePicker'
 import { format } from 'date-fns'
 
@@ -277,8 +271,8 @@ export default function CreateCardModal({
                                 const data = await res.json()
                                 setCatError(data.error || 'Erreur lors de la création')
                               }
-                            } catch (err) {
-                              setCatError('Erreur lors de la création')
+                            } catch (_err) {
+                              setCatError('Erreur lors de la création de la catégorie')
                             } finally {
                               setCatLoading(false)
                             }

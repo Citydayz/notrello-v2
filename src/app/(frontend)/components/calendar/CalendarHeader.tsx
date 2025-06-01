@@ -92,7 +92,7 @@ export default function CalendarHeader({
           className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
           onClick={handleToday}
         >
-          Aujourd'hui
+          Aujourd&apos;hui
         </button>
         <h2 className="text-xl font-semibold text-gray-800 capitalize">{formatDate()}</h2>
       </div>

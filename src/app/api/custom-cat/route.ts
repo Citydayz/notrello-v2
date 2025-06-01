@@ -3,6 +3,14 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
+import type { CustomCat } from '@/payload-types'
+
+interface _CustomCategory {
+  id: string
+  nom: string
+  couleur: string
+  user: string
+}
 
 async function getUserIdFromRequest() {
   const cookieStore = await cookies()
@@ -13,13 +21,13 @@ async function getUserIdFromRequest() {
   return decoded.id
 }
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   const userId = await getUserIdFromRequest()
   if (!userId) return NextResponse.json({ categories: [] }, { status: 401 })
 
   const payload = await getPayload({ config })
   const { docs } = await payload.find({
-    collection: 'custom-cat' as any,
+    collection: 'custom-cat',
     where: { user: { equals: userId } },
     limit: 100,
   })
@@ -42,7 +50,7 @@ export async function POST(req: NextRequest) {
     }
 
     // On parse le JSON extrait
-    let body
+    let body: { nom?: string; couleur?: string }
     try {
       body = JSON.parse(jsonMatch[0])
     } catch (e) {
@@ -56,12 +64,12 @@ export async function POST(req: NextRequest) {
 
     const payload = await getPayload({ config })
     const categorie = await payload.create({
-      collection: 'custom-cat' as any,
+      collection: 'custom-cat',
       data: {
         nom: body.nom,
-        couleur: body.couleur || 'blue',
+        couleur: (body.couleur as CustomCat['couleur']) || 'blue',
         user: userId,
-      } as any,
+      },
     })
 
     return NextResponse.json({ categorie })
