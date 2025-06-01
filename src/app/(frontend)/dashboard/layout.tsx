@@ -2,7 +2,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import jwt from 'jsonwebtoken'
 import ClientLayout from './ClientLayout'
-import { SpeedInsights } from "@vercel/speed-insights/next"
+// import { SpeedInsights } from '@vercel/speed-insights/next'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies()

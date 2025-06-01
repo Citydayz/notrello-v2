@@ -15,6 +15,15 @@ interface CalendarImportProps {
   setCategories: React.Dispatch<React.SetStateAction<Category[]>>
 }
 
+interface CalendarEvent {
+  icalId?: string
+  titre?: string
+  date?: string
+  heure?: string
+  heureFin?: string
+  description?: string
+}
+
 export default function CalendarImport({ categories, setCategories }: CalendarImportProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -132,11 +141,11 @@ export default function CalendarImport({ categories, setCategories }: CalendarIm
 }
 
 function parseICS(icsContent: string) {
-  const events = []
+  const events: CalendarEvent[] = []
   // Normaliser les sauts de ligne et joindre les lignes qui commencent par un espace
   const normalizedContent = icsContent.replace(/\r\n /g, '').replace(/\n /g, '')
   const lines = normalizedContent.split(/\r?\n/)
-  let currentEvent: any = null
+  let currentEvent: CalendarEvent | null = null
   const now = new Date()
 
   for (let i = 0; i < lines.length; i++) {

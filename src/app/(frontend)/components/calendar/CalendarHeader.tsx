@@ -108,7 +108,7 @@ export default function CalendarHeader({
             onClick={handleToday}
             className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500"
           >
-            Aujourd'hui
+            Aujourd&apos;hui
           </button>
           <button
             onClick={handleNext}
