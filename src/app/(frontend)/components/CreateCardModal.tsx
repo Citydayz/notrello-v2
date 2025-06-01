@@ -253,10 +253,6 @@ export default function CreateCardModal({
                             setCatLoading(true)
                             setCatError(null)
                             try {
-                              console.log('Envoi création catégorie', {
-                                nom: newCatNom,
-                                couleur: newCatCouleur,
-                              })
                               const res = await fetch('/api/custom-cat', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
