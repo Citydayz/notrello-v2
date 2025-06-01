@@ -1,6 +1,7 @@
 import Header from './components/layouts/Header'
 import Footer from './components/layouts/Footer'
 import Link from 'next/link'
+import Image from 'next/image'
 import './styles.css'
 
 export default function Home() {
@@ -27,8 +28,8 @@ export default function Home() {
           <br className="hidden md:inline" /> comme ton cerveau les pense
         </h1>
         <p className="mb-10 text-lg md:text-2xl text-gray-700 max-w-2xl mx-auto z-10">
-          Notrello t'aide à structurer ta journée avec un agenda visuel, des cartes interactives et
-          des notes liées.
+          Notrello t&apos;aide à structurer ta journée avec un agenda visuel, des cartes
+          interactives et des notes liées.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center z-10">
           <Link
@@ -47,10 +48,10 @@ export default function Home() {
         {/* Bloc réassurance */}
         <div className="mt-14 max-w-xl mx-auto bg-white/90 rounded-2xl shadow-lg p-8 border border-blue-100 z-10 backdrop-blur">
           <p className="text-base md:text-lg text-gray-700">
-            <span className="font-semibold text-blue-700">Pas de pression.</span> Notrello n'est pas
-            là pour te rendre "ultra-productif".
+            <span className="font-semibold text-blue-700">Pas de pression.</span> Notrello
+            n&apos;est pas là pour te rendre &quot;ultra-productif&quot;.
             <br />
-            C'est un espace pour t'aider à retrouver le fil, à ton rythme, sans jugement.
+            C&apos;est un espace pour t&apos;aider à retrouver le fil, à ton rythme, sans jugement.
           </p>
         </div>
       </section>
@@ -61,7 +62,7 @@ export default function Home() {
             {
               icon: '📅',
               title: 'Agenda visuel',
-              desc: "Visualise ta journée d'un coup d'œil, déplace tes tâches comme tu veux.",
+              desc: 'Visualise ta journée d&apos;un coup d&apos;œil, déplace tes tâches comme tu veux.&quot;',
             },
             {
               icon: '🗂️',
@@ -136,10 +137,12 @@ export default function Home() {
       {/* Témoignage / Perso */}
       <section id="about" className="py-16 text-center px-4">
         <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8 border border-blue-100 flex flex-col items-center">
-          <img
+          <Image
             src="https://randomuser.me/api/portraits/men/32.jpg"
             alt="Créateur Notrello"
-            className="w-16 h-16 rounded-full mb-4 shadow-md object-cover border-2 border-blue-200"
+            width={64}
+            height={64}
+            className="rounded-full mb-4 shadow-md object-cover border-2 border-blue-200"
             loading="lazy"
           />
           <blockquote className="italic text-xl text-gray-600 mb-2">

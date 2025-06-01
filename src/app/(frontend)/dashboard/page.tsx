@@ -50,6 +50,18 @@ interface Carte {
   date: string
 }
 
+interface TypeColors {
+  blue: string
+  green: string
+  purple: string
+  orange: string
+  red: string
+  pink: string
+  yellow: string
+  gray: string
+  none: string
+}
+
 function SortableCarte({ carte, onClick }: { carte: Carte; onClick?: () => void }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: carte.id,
@@ -162,11 +174,13 @@ export default function DashboardHome() {
         const categoriesRes = await fetch('/api/custom-cat', { credentials: 'include' })
         const categoriesData = await categoriesRes.json()
         setCategories(
-          categoriesData.categories.map((cat: any) => ({
-            id: cat.id || cat._id,
-            nom: cat.nom,
-            couleur: cat.couleur,
-          })),
+          categoriesData.categories.map(
+            (cat: { id?: string; _id?: string; nom: string; couleur: string }) => ({
+              id: cat.id || cat._id,
+              nom: cat.nom,
+              couleur: cat.couleur,
+            }),
+          ),
         )
 
         // Charger les cartes avec la date actuelle
@@ -231,7 +245,7 @@ export default function DashboardHome() {
         if (!moved) return old
         if (moved.heure === overId) return old
         // Calcul du décalage si heureFin existe
-        let newHeureFin = moved.heureFin
+        const newHeureFin = moved.heureFin
         if (
           moved.heureFin &&
           /^\d{2}:\d{2}/.test(moved.heure) &&
@@ -255,7 +269,7 @@ export default function DashboardHome() {
         })
         moved.heure = overId
         moved.heureFin = newHeureFin
-        let newCartes = old.filter((c) => c.id !== carteId)
+        const newCartes = old.filter((c) => c.id !== carteId)
         const before = newCartes.filter((c) => c.heure !== overId)
         const after = newCartes.filter((c) => c.heure === overId)
         after.push(moved)
@@ -265,7 +279,7 @@ export default function DashboardHome() {
     }
     // Sinon, comportement classique (drop sur une autre carte)
     if (active.id === over.id) return
-    let fromHeure = null,
+    const fromHeure = null,
       toHeure = null,
       fromIdx = -1,
       toIdx = -1
@@ -294,7 +308,7 @@ export default function DashboardHome() {
             body: JSON.stringify({ heure: toHeure }),
           })
         }
-        let newCartes = old.filter((c) => c.id !== active.id)
+        const newCartes = old.filter((c) => c.id !== active.id)
         moved.heure = toHeure
         const before = newCartes.filter((c) => c.heure !== toHeure)
         const after = newCartes.filter((c) => c.heure === toHeure)
@@ -386,9 +400,9 @@ export default function DashboardHome() {
       <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center text-blue-800 shadow">
         <p className="text-lg font-semibold mb-2">Pas de pression.</p>
         <p className="text-sm">
-          Notrello n'est pas là pour te rendre "ultra-productif".
+          Notrello n&apos;est pas là pour te rendre &quot;ultra-productif&quot;.
           <br />
-          C'est un espace pour t'aider à retrouver le fil, à ton rythme, sans jugement.
+          C&apos;est un espace pour t&apos;aider à retrouver le fil, à ton rythme, sans jugement.
         </p>
       </div>
 
@@ -427,7 +441,7 @@ function ModalCarteDetail({
 }: {
   carte: Carte
   onClose: () => void
-  typeColors: any
+  typeColors: TypeColors
   setCartes: React.Dispatch<React.SetStateAction<Carte[]>>
   setSelectedCarte: React.Dispatch<React.SetStateAction<Carte | null>>
   categories: Category[]
@@ -489,7 +503,14 @@ function ModalCarteDetail({
   }
 
   // Édition
-  function handleEditSubmit(data: any) {
+  function handleEditSubmit(data: {
+    titre: string
+    description: string
+    type: string
+    heure: string
+    heureFin?: string
+    date: string
+  }) {
     setLoading(true)
     setError(null)
     fetch(`/api/cartes/${carte.id}`, {

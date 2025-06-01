@@ -107,7 +107,9 @@ export default function InputField({
           onFocus={onFocus ? onFocus : () => setIsFocused(true)}
           onBlur={(e) => {
             handleBlur()
-            onBlur && onBlur(e)
+            if (onBlur) {
+              onBlur(e)
+            }
           }}
           placeholder={placeholder}
           required={required}

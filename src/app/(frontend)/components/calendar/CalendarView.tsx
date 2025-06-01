@@ -9,6 +9,8 @@ import { Carte } from '@/payload-types'
 import CalendarHeader from './CalendarHeader'
 import CalendarEventModal from './CalendarEventModal'
 import './calendar.css'
+import type { EventClickArg, DateClickArg } from '@fullcalendar/interaction'
+import type { FullCalendar } from '@fullcalendar/core'
 
 interface CalendarViewProps {
   cartes: Carte[]
@@ -23,7 +25,7 @@ export default function CalendarView({
   onCarteUpdate,
   onCarteDelete,
 }: CalendarViewProps) {
-  const calendarRef = useRef<FullCalendar>(null)
+  const calendarRef = useRef<FullCalendar | null>(null)
   const [currentView, setCurrentView] = useState<'dayGridMonth' | 'timeGridWeek' | 'timeGridDay'>(
     'dayGridMonth',
   )
@@ -37,7 +39,7 @@ export default function CalendarView({
     }
   }, [currentView])
 
-  const handleEventClick = (info: any) => {
+  const handleEventClick = (info: EventClickArg) => {
     const carte = cartes.find((c) => c.id === info.event.id)
     if (carte) {
       setSelectedEvent(carte)
@@ -45,7 +47,7 @@ export default function CalendarView({
     }
   }
 
-  const handleDateClick = (info: any) => {
+  const handleDateClick = (info: DateClickArg) => {
     onCarteCreate(info.date)
   }
 
@@ -94,11 +96,11 @@ export default function CalendarView({
             allDay,
             backgroundColor:
               typeof carte.type === 'object' && carte.type && 'couleur' in carte.type
-                ? (carte.type as any).couleur
+                ? (carte.type as { couleur: string }).couleur
                 : '#3B82F6',
             borderColor:
               typeof carte.type === 'object' && carte.type && 'couleur' in carte.type
-                ? (carte.type as any).couleur
+                ? (carte.type as { couleur: string }).couleur
                 : '#3B82F6',
             textColor: '#FFFFFF',
           }

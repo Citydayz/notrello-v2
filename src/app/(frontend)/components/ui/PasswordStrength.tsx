@@ -26,7 +26,7 @@ const criteria = [
   { label: 'Une lettre majuscule', regex: /[A-Z]/ },
   { label: 'Une lettre minuscule', regex: /[a-z]/ },
   { label: 'Un chiffre', regex: /[0-9]/ },
-  { label: 'Un caractère spécial', regex: /[!@#$%^&*(),.?":{}|<>]/ },
+  { label: 'Un caractère spécial', regex: /[!@#$%^&*(),.?&quot;:{}|<>]/ },
 ]
 
 export default function PasswordStrength({ password, onStrengthChange }: PasswordStrengthProps) {
