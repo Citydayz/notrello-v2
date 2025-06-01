@@ -12,7 +12,6 @@ import {
   ChevronRightIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import Header from '../components/layouts/Header'
 import { useState, useEffect } from 'react'
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
@@ -81,7 +80,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         )}
       </button>
       <main className="flex-1 overflow-auto">
-        <Header isApp={true} />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

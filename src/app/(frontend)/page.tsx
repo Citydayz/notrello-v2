@@ -1,4 +1,3 @@
-import Header from './components/layouts/Header'
 import Footer from './components/layouts/Footer'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -7,7 +6,7 @@ import './styles.css'
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-blue-50 via-white to-blue-100 text-gray-900">
-      <Header />
+      {/* <Header /> */}
       {/* Hero full screen */}
       <section className="flex flex-col items-center justify-center flex-1 text-center px-4 py-32 min-h-[90vh] relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none select-none opacity-30" aria-hidden>

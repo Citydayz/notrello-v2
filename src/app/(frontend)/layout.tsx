@@ -1,10 +1,17 @@
-import React from 'react'
-import './globals.css'
+import Header from './components/layouts/Header'
+import { getMe } from '@/lib/auth'
+import { headers } from 'next/headers'
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
+  const { user } = await getMe()
+  const headersList = await headers()
+  const pathname = headersList.get('x-invoke-path') || ''
+  const isApp = pathname.startsWith('/dashboard')
+
   return (
-    <html lang="fr">
-      <body>{children}</body>
-    </html>
+    <>
+      <Header initialUser={user} isApp={isApp} />
+      {children}
+    </>
   )
 }
