@@ -4,7 +4,6 @@ const Users: CollectionConfig = {
   slug: 'users',
   auth: {
     useAPIKey: false,
-    disableLocalStrategy: true,
     verify: false,
   },
   admin: {
@@ -14,6 +13,12 @@ const Users: CollectionConfig = {
     {
       name: 'pseudo',
       type: 'text',
+      required: true,
+      unique: true,
+    },
+    {
+      name: 'email',
+      type: 'email',
       required: true,
       unique: true,
     },
