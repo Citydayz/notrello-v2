@@ -35,6 +35,12 @@ pnpm install
 cp .env.example .env
 ```
 
+Modifiez ensuite le fichier `.env` et renseignez les variables suivantes :
+
+- `PAYLOAD_SECRET` : clé utilisée par Payload pour signer les tokens.
+- `DATABASE_URI` : URI de connexion à MongoDB.
+- `PAYLOAD_PUBLIC_SERVER_URL` : URL publique de votre instance Payload.
+
 4. Démarrez l'application en mode développement :
 
 ```bash
