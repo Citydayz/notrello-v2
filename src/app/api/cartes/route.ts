@@ -17,10 +17,20 @@ export async function GET(req: NextRequest) {
   const userId = await getUserIdFromRequest()
   if (!userId) return NextResponse.json({ cartes: [] }, { status: 401 })
 
+  const searchParams = req.nextUrl.searchParams
+  const date = searchParams.get('date')
+  const view = searchParams.get('view')
+
   const payload = await getPayload({ config })
   const { docs } = await payload.find({
     collection: 'cartes',
-    where: { user: { equals: userId } },
+    where: {
+      and: [
+        { user: { equals: userId } },
+        // Ne filtrer par date que si on est sur la timeline
+        ...(view !== 'calendar' && date ? [{ date: { equals: date } }] : []),
+      ],
+    },
     limit: 100,
   })
   return NextResponse.json({ cartes: docs })

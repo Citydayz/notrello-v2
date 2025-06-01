@@ -143,6 +143,10 @@ export default function DashboardHome() {
   const [user, setUser] = useState<{ pseudo?: string } | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCarte, setSelectedCarte] = useState<Carte | null>(null)
+  const [dateActuelle, setDateActuelle] = useState(() => {
+    const now = new Date()
+    return now.toISOString().split('T')[0]
+  })
 
   const sensors = useSensors(useSensor(PointerSensor))
 
@@ -165,8 +169,10 @@ export default function DashboardHome() {
           })),
         )
 
-        // Charger les cartes
-        const cartesRes = await fetch('/api/cartes', { credentials: 'include' })
+        // Charger les cartes avec la date actuelle
+        const cartesRes = await fetch(`/api/cartes?date=${dateActuelle}&view=timeline`, {
+          credentials: 'include',
+        })
         const cartesData = await cartesRes.json()
         setCartes(cartesData.cartes)
       } catch (error) {
@@ -175,7 +181,7 @@ export default function DashboardHome() {
     }
 
     loadData()
-  }, [])
+  }, [dateActuelle]) // Recharger les données quand la date change
 
   // On regroupe les cartes par heure
   const cartesParHeure: Record<string, Carte[]> = {}

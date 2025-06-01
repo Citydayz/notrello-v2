@@ -23,13 +23,20 @@ export async function PATCH(req: NextRequest, context: { params: { id: string } 
   if (carte.user !== userId && carte.user?.id !== userId) {
     return NextResponse.json({ error: 'Non autorisé' }, { status: 403 })
   }
+
+  // Vérifier le type de contenu
+  const contentType = req.headers.get('content-type') || ''
   let body
-  try {
+
+  if (contentType.includes('application/json')) {
     body = await req.json()
-  } catch {
+  } else if (contentType.includes('multipart/form-data')) {
     const formData = await req.formData()
     body = Object.fromEntries(formData.entries())
+  } else {
+    return NextResponse.json({ error: 'Type de contenu non supporté' }, { status: 400 })
   }
+
   const { titre, description, type, heure, heureFin, date } = body
   const updated = await payload.update({
     collection: 'cartes',
