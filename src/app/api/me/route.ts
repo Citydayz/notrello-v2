@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { cookies } from 'next/headers'
-import jwt from 'jsonwebtoken'
+import { getUserFromToken } from '@/lib/auth'
 
 export async function GET(req: NextRequest) {
   const cookieStore = await cookies()
@@ -13,10 +13,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const decoded = jwt.decode(token)
-    if (!decoded || typeof decoded !== 'object' || !decoded.id) {
-      return NextResponse.json({ user: null }, { status: 401 })
-    }
+    const decoded = getUserFromToken(token)
 
     const payload = await getPayload({ config })
     const { docs } = await payload.find({
