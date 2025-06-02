@@ -1,33 +1,23 @@
-import { cookies } from 'next/headers'
-import { getPayload } from 'payload'
-import config from '@/payload.config'
-import jwt from 'jsonwebtoken'
-import type { User } from '@/payload-types'
+'use client'
 
-export async function getMe(): Promise<{ user: User | null }> {
-  const cookieStore = await cookies()
-  const token = cookieStore.get('payload-token')?.value
+import { JwtPayload } from 'jsonwebtoken'
 
-  if (!token) {
-    return { user: null }
+export interface UserToken extends JwtPayload {
+  id: string
+  email: string
+}
+
+export async function verifyToken(token: string): Promise<UserToken> {
+  const response = await fetch('/api/auth/verify', {
+    headers: {
+      Cookie: `payload-token=${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('Invalid token')
   }
 
-  try {
-    const decoded = jwt.decode(token)
-    if (!decoded || typeof decoded !== 'object' || !decoded.id) {
-      return { user: null }
-    }
-    const payload = await getPayload({ config })
-    const { docs } = await payload.find({
-      collection: 'users',
-      where: { id: { equals: decoded.id } },
-      limit: 1,
-    })
-    if (!docs.length) {
-      return { user: null }
-    }
-    return { user: docs[0] as User }
-  } catch (_error) {
-    return { user: null }
-  }
+  const data = await response.json()
+  return data.user
 }

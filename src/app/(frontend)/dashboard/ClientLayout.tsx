@@ -13,8 +13,15 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { UserToken } from '@/lib/server-auth'
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
+export default function ClientLayout({
+  children,
+  user,
+}: {
+  children: React.ReactNode
+  user: UserToken
+}) {
   const pathname = usePathname()
   const [isNavVisible, setIsNavVisible] = useState(true)
 

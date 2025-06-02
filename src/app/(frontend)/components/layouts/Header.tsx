@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import type { User } from '@/payload-types'
 import AuthModal from '../AuthModal'
@@ -13,8 +13,22 @@ interface HeaderProps {
 export default function Header({ isApp = false, initialUser = null }: HeaderProps) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const user = initialUser
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   const handleLogout = async () => {
     await fetch('/api/logout', { method: 'POST', credentials: 'include' })
@@ -52,7 +66,7 @@ export default function Header({ isApp = false, initialUser = null }: HeaderProp
       )}
       <div className={`flex items-center gap-4${!isApp ? ' ml-8' : ''}`}>
         {user ? (
-          <div className="relative">
+          <div className="relative z-50" ref={menuRef}>
             <button
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               className="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition"
@@ -73,21 +87,26 @@ export default function Header({ isApp = false, initialUser = null }: HeaderProp
               </svg>
             </button>
             {isUserMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-[100]">
                 <a
                   href="/dashboard"
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => setIsUserMenuOpen(false)}
                 >
                   Dashboard
                 </a>
                 <a
                   href="/dashboard/calendar"
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => setIsUserMenuOpen(false)}
                 >
                   Calendrier
                 </a>
                 <button
-                  onClick={handleLogout}
+                  onClick={() => {
+                    setIsUserMenuOpen(false)
+                    handleLogout()
+                  }}
                   className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Se déconnecter
