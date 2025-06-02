@@ -1,8 +1,6 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { getPayload } from 'payload'
-import config from '@/payload.config'
-import jwt from 'jsonwebtoken'
+import { getUserFromToken } from '@/lib/auth'
 import ClientLayout from './ClientLayout'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -11,7 +9,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   let user = null
   if (token) {
     try {
-      const decoded = jwt.decode(token)
+      const decoded = getUserFromToken(token)
       if (decoded && typeof decoded === 'object' && decoded.email) {
         user = decoded
       }
